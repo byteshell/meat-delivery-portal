@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Meat Delivery Portal</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- TailwindCSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+</head>
+<body class="bg-gray-100 min-h-screen flex flex-col">
+    <!-- Navbar -->
+    <header>
+        <nav class="bg-white border-b border-gray-200 shadow" role="navigation" aria-label="Main navigation">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="flex justify-between h-16">
+                    <div class="flex">
+                        <a href="/" class="flex-shrink-0 flex items-center text-2xl font-bold text-red-700 hover:text-red-900 focus:outline-none focus:ring-2 focus:ring-red-500" aria-label="Home">
+                            <svg class="h-8 w-8 mr-2 text-red-700" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M3 12l2-2m0 0l7-7 7 7m-9 2v8m4-8v8m-4 0h4"></path>
+                            </svg>
+                            Meat Portal
+                        </a>
+                        <div class="hidden sm:-my-px sm:ml-10 sm:flex sm:space-x-8">
+                            <a href="/meat/" class="inline-flex items-center px-1 pt-1 border-b-2 border-transparent text-sm font-medium text-gray-700 hover:border-red-700 hover:text-red-700 focus:outline-none focus:text-red-900 focus:border-red-900 transition">Meat</a>
+                            <a href="/orders/cart/" class="inline-flex items-center px-1 pt-1 border-b-2 border-transparent text-sm font-medium text-gray-700 hover:border-red-700 hover:text-red-700 focus:outline-none focus:text-red-900 focus:border-red-900 transition">Cart</a>
+                            <a href="/orders/history/" class="inline-flex items-center px-1 pt-1 border-b-2 border-transparent text-sm font-medium text-gray-700 hover:border-red-700 hover:text-red-700 focus:outline-none focus:text-red-900 focus:border-red-900 transition">Orders</a>
+                            <a href="/ai/forecast/" class="inline-flex items-center px-1 pt-1 border-b-2 border-transparent text-sm font-medium text-gray-700 hover:border-red-700 hover:text-red-700 focus:outline-none focus:text-red-900 focus:border-red-900 transition">Forecast</a>
+                            <a href="/meat/company/" class="inline-flex items-center px-1 pt-1 border-b-2 border-transparent text-sm font-medium text-gray-700 hover:border-red-700 hover:text-red-700 focus:outline-none focus:text-red-900 focus:border-red-900 transition">Company Dashboard</a>
+                        </div>
+                    </div>
+                    <div class="hidden sm:ml-6 sm:flex sm:items-center">
+                        {% if user.is_authenticated %}
+                            <span class="text-gray-700 mr-4">Hello, {{ user.username|escape }}</span>
+                            <form method="post" action="/accounts/logout/" class="inline">
+                                {% csrf_token %}
+                                <button type="submit" class="bg-red-600 hover:bg-red-700 text-white px-3 py-1 rounded focus:outline-none focus:ring-2 focus:ring-red-500 transition">Logout</button>
+                            </form>
+                        {% else %}
+                            <a href="/accounts/login/" class="bg-blue-600 hover:bg-blue-700 text-white px-3 py-1 rounded mr-2 focus:outline-none focus:ring-2 focus:ring-blue-500 transition">Login</a>
+                            <a href="/accounts/register/" class="bg-green-600 hover:bg-green-700 text-white px-3 py-1 rounded focus:outline-none focus:ring-2 focus:ring-green-500 transition">Register</a>
+                        {% endif %}
+                    </div>
+                    <!-- Mobile menu button -->
+                    <div class="-mr-2 flex items-center sm:hidden">
+                        <button id="mobile-menu-button" type="button" class="inline-flex items-center justify-center p-2 rounded-md text-gray-400 hover:text-red-700 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-red-500" aria-controls="mobile-menu" aria-expanded="false" aria-label="Open main menu">
+                            <svg class="block h-6 w-6" id="menu-open-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
+                            </svg>
+                            <svg class="hidden h-6 w-6" id="menu-close-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <!-- Mobile menu, show/hide based on menu state. -->
+            <div class="sm:hidden" id="mobile-menu" style="display: none;">
+                <div class="pt-2 pb-3 space-y-1">
+                    <a href="/meat/" class="block pl-3 pr-4 py-2 border-l-4 border-transparent text-base font-medium text-gray-700 hover:border-red-700 hover:bg-gray-50 hover:text-red-700 focus:outline-none focus:bg-gray-100 transition">Meat</a>
+                    <a href="/orders/cart/" class="block pl-3 pr-4 py-2 border-l-4 border-transparent text-base font-medium text-gray-700 hover:border-red-700 hover:bg-gray-50 hover:text-red-700 focus:outline-none focus:bg-gray-100 transition">Cart</a>
+                    <a href="/orders/history/" class="block pl-3 pr-4 py-2 border-l-4 border-transparent text-base font-medium text-gray-700 hover:border-red-700 hover:bg-gray-50 hover:text-red-700 focus:outline-none focus:bg-gray-100 transition">Orders</a>
+                    <a href="/ai/forecast/" class="block pl-3 pr-4 py-2 border-l-4 border-transparent text-base font-medium text-gray-700 hover:border-red-700 hover:bg-gray-50 hover:text-red-700 focus:outline-none focus:bg-gray-100 transition">Forecast</a>
+                    <a href="/meat/company/" class="block pl-3 pr-4 py-2 border-l-4 border-transparent text-base font-medium text-gray-700 hover:border-red-700 hover:bg-gray-50 hover:text-red-700 focus:outline-none focus:bg-gray-100 transition">Company Dashboard</a>
+                    {% if user.is_authenticated %}
+                        <form method="post" action="/accounts/logout/" class="pl-3 pr-4 py-2">
+                            {% csrf_token %}
+                            <button type="submit" class="w-full text-left bg-red-600 hover:bg-red-700 text-white px-3 py-1 rounded focus:outline-none focus:ring-2 focus:ring-red-500 transition">Logout</button>
+                        </form>
+                    {% else %}
+                        <a href="/accounts/login/" class="block pl-3 pr-4 py-2 border-l-4 border-transparent text-base font-medium text-blue-700 hover:bg-blue-50 hover:text-blue-900 focus:outline-none focus:bg-blue-100 transition">Login</a>
+                        <a href="/accounts/register/" class="block pl-3 pr-4 py-2 border-l-4 border-transparent text-base font-medium text-green-700 hover:bg-green-50 hover:text-green-900 focus:outline-none focus:bg-green-100 transition">Register</a>
+                    {% endif %}
+                </div>
+            </div>
+        </nav>
+    </header>
+    <main class="flex-1">
+        <div class="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
+            {% block content %}{% endblock %}
+        </div>
+    </main>
+    <footer class="bg-white border-t border-gray-200 shadow mt-8">
+        <div class="max-w-7xl mx-auto px-4 py-4 text-center text-gray-500 text-sm">
+            &copy; {{ now|date:"Y" }} Meat Delivery Portal. All rights reserved.
+        </div>
+    </footer>
+    <script>
+        // Mobile menu toggle
+        const menuButton = document.getElementById('mobile-menu-button');
+        const mobileMenu = document.getElementById('mobile-menu');
+        const menuOpenIcon = document.getElementById('menu-open-icon');
+        const menuCloseIcon = document.getElementById('menu-close-icon');
+        if (menuButton) {
+            menuButton.addEventListener('click', function() {
+                const isOpen = mobileMenu.style.display === 'block';
+                mobileMenu.style.display = isOpen ? 'none' : 'block';
+                menuOpenIcon.classList.toggle('hidden', isOpen);
+                menuCloseIcon.classList.toggle('hidden', !isOpen);
+                menuButton.setAttribute('aria-expanded', !isOpen);
+            });
+        }
+        // Accessibility: close menu on Escape key
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape' && mobileMenu.style.display === 'block') {
+                mobileMenu.style.display = 'none';
+                menuOpenIcon.classList.remove('hidden');
+                menuCloseIcon.classList.add('hidden');
+                menuButton.setAttribute('aria-expanded', false);
+            }
+        });
+    </script>
+</body>
+</html>

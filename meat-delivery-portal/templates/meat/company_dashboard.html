@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+{% block content %}
+<h2 class="text-xl font-bold mb-4">Company Dashboard</h2>
+<a href="{% url 'add_meat' %}" class="bg-green-500 text-white px-4 py-2 rounded mb-4 inline-block">Add Meat</a>
+<table class="min-w-full bg-white rounded shadow">
+    <thead>
+        <tr>
+            <th class="px-4 py-2">Type</th>
+            <th class="px-4 py-2">Quantity</th>
+            <th class="px-4 py-2">Price</th>
+            <th class="px-4 py-2">Date Added</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for meat in meats %}
+        <tr>
+            <td class="border px-4 py-2">{{ meat.get_meat_type_display }}</td>
+            <td class="border px-4 py-2">{{ meat.quantity }}</td>
+            <td class="border px-4 py-2">${{ meat.price }}</td>
+            <td class="border px-4 py-2">{{ meat.date_added }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

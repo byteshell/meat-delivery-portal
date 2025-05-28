@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+{% block content %}
+<h1 class="text-2xl font-bold mb-4">Available Meat</h1>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+    {% for meat in meats %}
+    <div class="bg-white p-4 rounded shadow">
+        <h2 class="font-bold">{{ meat.get_meat_type_display }}</h2>
+        <p>Company: {{ meat.company.company_name }}</p>
+        <p>Quantity: {{ meat.quantity }} kg</p>
+        <p>Price: ${{ meat.price }}</p>
+        <form method="post" action="{% url 'add_to_cart' meat.id %}">
+            {% csrf_token %}
+            <button type="submit" class="bg-green-500 text-white px-2 py-1 rounded mt-2">Add to Cart</button>
+        </form>
+    </div>
+    {% endfor %}
+</div>
+{% endblock %}

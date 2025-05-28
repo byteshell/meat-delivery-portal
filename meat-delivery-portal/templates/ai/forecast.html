@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+{% block content %}
+<h2 class="text-xl font-bold mb-4">Demand Forecast (next 30 days, based on order history)</h2>
+<table class="min-w-full bg-white rounded shadow">
+    <thead>
+        <tr>
+            <th class="px-4 py-2">Company</th>
+            <th class="px-4 py-2">Meat Type</th>
+            <th class="px-4 py-2">Current Stock</th>
+            <th class="px-4 py-2">Ordered (last 30 days)</th>
+            <th class="px-4 py-2">Predicted Demand (next 30 days)</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for forecast in forecasts %}
+        <tr>
+            <td class="border px-4 py-2">{{ forecast.company_name }}</td>
+            <td class="border px-4 py-2">{{ forecast.meat_type|title }}</td>
+            <td class="border px-4 py-2">{{ forecast.current_stock }}</td>
+            <td class="border px-4 py-2">{{ forecast.ordered_last_30 }}</td>
+            <td class="border px-4 py-2 font-bold">{{ forecast.predicted_demand }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

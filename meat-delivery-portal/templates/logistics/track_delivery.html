@@ -1,0 +1,7 @@
+{% extends 'base.html' %}
+{% block content %}
+<h2 class="text-xl font-bold mb-4">Delivery Tracking</h2>
+<p>Status: {{ delivery.status }}</p>
+<p>Tracking Number: {{ delivery.tracking_number }}</p>
+<p>Last Updated: {{ delivery.updated_at }}</p>
+{% endblock %}

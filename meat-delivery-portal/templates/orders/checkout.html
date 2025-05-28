@@ -1,0 +1,6 @@
+{% extends 'base.html' %}
+{% block content %}
+<h2 class="text-xl font-bold mb-4">Order Placed!</h2>
+<p>Your order has been placed successfully.</p>
+<a href="{% url 'order_history' %}" class="bg-blue-500 text-white px-4 py-2 rounded mt-4 inline-block">View Orders</a>
+{% endblock %}

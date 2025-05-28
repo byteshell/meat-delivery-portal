@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+{% block content %}
+<h2 class="text-xl font-bold mb-4">Order History</h2>
+<table class="min-w-full bg-white rounded shadow">
+    <thead>
+        <tr>
+            <th class="px-4 py-2">Order ID</th>
+            <th class="px-4 py-2">Status</th>
+            <th class="px-4 py-2">Date</th>
+            <th class="px-4 py-2">Meat(s)</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for order in orders %}
+        <tr>
+            <td class="border px-4 py-2">{{ order.id }}</td>
+            <td class="border px-4 py-2">{{ order.status }}</td>
+            <td class="border px-4 py-2">{{ order.created_at }}</td>
+            <td class="border px-4 py-2">
+                <ul>
+                {% for item in order.items.all %}
+                    <li>
+                        {{ item.meat.get_meat_type_display }} ({{ item.quantity }} kg, {{ item.meat.company.company_name }})
+                    </li>
+                {% endfor %}
+                </ul>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}
