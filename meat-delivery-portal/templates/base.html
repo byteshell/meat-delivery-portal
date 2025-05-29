@@ -27,6 +27,7 @@
                             <a href="/orders/history/" class="inline-flex items-center px-1 pt-1 border-b-2 border-transparent text-sm font-medium text-gray-700 hover:border-red-700 hover:text-red-700 focus:outline-none focus:text-red-900 focus:border-red-900 transition">Orders</a>
                             <a href="/ai/forecast/" class="inline-flex items-center px-1 pt-1 border-b-2 border-transparent text-sm font-medium text-gray-700 hover:border-red-700 hover:text-red-700 focus:outline-none focus:text-red-900 focus:border-red-900 transition">Forecast</a>
                             <a href="/meat/company/" class="inline-flex items-center px-1 pt-1 border-b-2 border-transparent text-sm font-medium text-gray-700 hover:border-red-700 hover:text-red-700 focus:outline-none focus:text-red-900 focus:border-red-900 transition">Company Dashboard</a>
+                            <a href="/logistics/track/" class="inline-flex items-center px-1 pt-1 border-b-2 border-transparent text-sm font-medium text-gray-700 hover:border-blue-700 hover:text-blue-700 focus:outline-none focus:text-blue-900 focus:border-blue-900 transition">Track Delivery</a>
                         </div>
                     </div>
                     <div class="hidden sm:ml-6 sm:flex sm:items-center">
@@ -62,6 +63,7 @@
                     <a href="/orders/history/" class="block pl-3 pr-4 py-2 border-l-4 border-transparent text-base font-medium text-gray-700 hover:border-red-700 hover:bg-gray-50 hover:text-red-700 focus:outline-none focus:bg-gray-100 transition">Orders</a>
                     <a href="/ai/forecast/" class="block pl-3 pr-4 py-2 border-l-4 border-transparent text-base font-medium text-gray-700 hover:border-red-700 hover:bg-gray-50 hover:text-red-700 focus:outline-none focus:bg-gray-100 transition">Forecast</a>
                     <a href="/meat/company/" class="block pl-3 pr-4 py-2 border-l-4 border-transparent text-base font-medium text-gray-700 hover:border-red-700 hover:bg-gray-50 hover:text-red-700 focus:outline-none focus:bg-gray-100 transition">Company Dashboard</a>
+                    <a href="/logistics/track/" class="block pl-3 pr-4 py-2 border-l-4 border-transparent text-base font-medium text-blue-700 hover:bg-blue-50 hover:text-blue-900 focus:outline-none focus:bg-blue-100 transition">Track Delivery</a>
                     {% if user.is_authenticated %}
                         <form method="post" action="/accounts/logout/" class="pl-3 pr-4 py-2">
                             {% csrf_token %}

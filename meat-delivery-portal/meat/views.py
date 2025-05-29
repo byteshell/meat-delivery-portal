@@ -2,10 +2,28 @@ from django.shortcuts import render, redirect
 from .models import Meat
 from .forms import MeatForm
 from django.contrib.auth.decorators import login_required
+from orders.models import Item
 
 def meat_list(request):
     meats = Meat.objects.filter(quantity__gt=0)
-    return render(request, 'meat/meat_list.html', {'meats': meats})
+    meat_types = Meat.MEAT_TYPE_CHOICES
+    companies = Meat.objects.values_list('company__id', 'company__company_name').distinct()
+
+    selected_meat_type = request.GET.get('meat_type')
+    selected_company = request.GET.get('company')
+
+    if selected_meat_type:
+        meats = meats.filter(meat_type=selected_meat_type)
+    if selected_company:
+        meats = meats.filter(company__id=selected_company)
+
+    return render(request, 'meat/meat_list.html', {
+        'meats': meats,
+        'meat_types': meat_types,
+        'companies': companies,
+        'selected_meat_type': selected_meat_type,
+        'selected_company': selected_company,
+    })
 
 @login_required
 def add_meat(request):
@@ -28,3 +46,24 @@ def company_dashboard(request):
         return redirect('meat_list')
     meats = Meat.objects.filter(company=request.user.profile)
     return render(request, 'meat/company_dashboard.html', {'meats': meats})
+
+@login_required
+def company_meat_orders(request):
+    if not hasattr(request.user, 'profile') or request.user.profile.role != 'company':
+        return redirect('meat_list')
+    meats = Meat.objects.filter(company=request.user.profile)
+    # For each meat, get orders and user breakdown
+    meat_orders = []
+    for meat in meats:
+        # Get all items for this meat
+        items = Item.objects.filter(meat=meat)
+        user_orders = {}
+        for item in items:
+            username = item.order.user.username
+            user_orders[username] = user_orders.get(username, 0) + item.quantity
+        meat_orders.append({
+            'meat': meat,
+            'current_quantity': meat.quantity,
+            'user_orders': user_orders
+        })
+    return render(request, 'meat/company_meat_orders.html', {'meat_orders': meat_orders})

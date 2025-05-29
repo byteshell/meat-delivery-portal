@@ -1,0 +1,10 @@
+{% extends 'base.html' %}
+{% block content %}
+<h2 class="text-xl font-bold mb-4">Track Your Delivery</h2>
+<form method="post" class="bg-white p-4 rounded shadow max-w-md mx-auto">
+    {% csrf_token %}
+    <label for="order_id" class="block mb-2 font-medium">Order ID</label>
+    <input type="number" name="order_id" id="order_id" class="border rounded px-2 py-1 w-full mb-4" required>
+    <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded">Track</button>
+</form>
+{% endblock %}

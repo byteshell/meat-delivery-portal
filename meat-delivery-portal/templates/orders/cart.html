@@ -2,24 +2,30 @@
 {% block content %}
 <h2 class="text-xl font-bold mb-4">Cart</h2>
 {% if cart_items %}
-<table class="min-w-full bg-white rounded shadow">
-    <thead>
-        <tr>
-            <th class="px-4 py-2">Meat</th>
-            <th class="px-4 py-2">Quantity</th>
-            <th class="px-4 py-2">Subtotal</th>
-        </tr>
-    </thead>
-    <tbody>
-        {% for item in cart_items %}
-        <tr>
-            <td class="border px-4 py-2">{{ item.meat.get_meat_type_display }}</td>
-            <td class="border px-4 py-2">{{ item.quantity }}</td>
-            <td class="border px-4 py-2">${{ item.subtotal }}</td>
-        </tr>
-        {% endfor %}
-    </tbody>
-</table>
+<form method="post" action="{% url 'update_cart' %}">
+    {% csrf_token %}
+    <table class="min-w-full bg-white rounded shadow">
+        <thead>
+            <tr>
+                <th class="px-4 py-2">Meat</th>
+                <th class="px-4 py-2">Quantity</th>
+                <th class="px-4 py-2">Subtotal</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for item in cart_items %}
+            <tr>
+                <td class="border px-4 py-2">{{ item.meat.get_meat_type_display }}</td>
+                <td class="border px-4 py-2">
+                    <input type="number" name="quantity_{{ item.meat.id }}" min="1" max="{{ item.meat.quantity|add:item.quantity }}" value="{{ item.quantity }}" class="border rounded px-2 py-1 w-20" required>
+                </td>
+                <td class="border px-4 py-2">${{ item.subtotal }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded mt-4 inline-block">Update Cart</button>
+</form>
 <p class="mt-4 font-bold">Total: ${{ total }}</p>
 <a href="{% url 'checkout' %}" class="bg-blue-500 text-white px-4 py-2 rounded mt-4 inline-block">Checkout</a>
 {% else %}

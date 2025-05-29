@@ -1,5 +1,5 @@
 import random
-from datetime import timedelta
+from datetime import timedelta, datetime
 from django.core.management.base import BaseCommand
 from django.contrib.auth.models import User
 from django.utils import timezone
@@ -32,17 +32,41 @@ class Command(BaseCommand):
         company_names = [
             "RedCow Ltd", "Porky Partners", "ChickenKing", "LambLand", "MeatMaster", "PrimeCuts", "FarmFresh", "UrbanMeat", "CountryBeef", "PoultryPro"
         ]
+        company_addresses = [
+            "123 Main St, Springfield", "456 Oak Ave, Shelbyville", "789 Maple Rd, Capital City",
+            "101 River Dr, Ogdenville", "202 Hilltop Ln, North Haverbrook", "303 Lakeview Blvd, Brockway",
+            "404 Pine St, Waverly Hills", "505 Cedar Ct, Cypress Creek", "606 Elm St, West Springfield",
+            "707 Birch Ave, Monorail City"
+        ]
+        company_latlng = [
+            (40.7128, -74.0060), (41.8781, -87.6298), (34.0522, -118.2437),
+            (29.7604, -95.3698), (39.9526, -75.1652), (33.4484, -112.0740),
+            (32.7767, -96.7970), (37.7749, -122.4194), (47.6062, -122.3321),
+            (42.3601, -71.0589)
+        ]
         meat_types = ['beef', 'pork', 'chicken', 'lamb']
         companies = []
 
         # Create companies if not exist
-        for name in company_names:
+        for idx, name in enumerate(company_names):
             username = name.lower().replace(' ', '_')
             user, created = User.objects.get_or_create(username=username)
             if created:
                 user.set_password('password123')
                 user.save()
-            profile, _ = Profile.objects.get_or_create(user=user, role='company', company_name=name)
+            address = company_addresses[idx % len(company_addresses)]
+            lat, lng = company_latlng[idx % len(company_latlng)]
+            profile, _ = Profile.objects.get_or_create(
+                user=user,
+                role='company',
+                company_name=name,
+                defaults={'address': address, 'latitude': lat, 'longitude': lng}
+            )
+            # Update address and geolocation if already exists
+            profile.address = address
+            profile.latitude = lat
+            profile.longitude = lng
+            profile.save()
             companies.append(profile)
 
         # Create massive meat data
@@ -61,24 +85,44 @@ class Command(BaseCommand):
         Meat.objects.bulk_create(meats)
         self.stdout.write(self.style.SUCCESS('Successfully seeded 500+ meat entries.'))
 
+        # --- Clear previous order history ---
+        Item.objects.all().delete()
+        Order.objects.all().delete()
+
         # Massive order history for forecast
         all_meats = list(Meat.objects.all())
-        # Add 2000 random orders for the customer user, spread over the last 90 days
         customer_user = User.objects.get(username='customer')
         order_count = 2000
         items_created = 0
+
+        # Set the start and end date for the range
+        start_date = datetime(2024, 5, 1)
+        end_date = datetime(2025, 5, 1)
+        total_days = (end_date - start_date).days
+
+        # Create orders and items with correct created_at using save(update_fields=['created_at'])
+        orders = []
         for _ in range(order_count):
-            days_ago = random.randint(0, 89)
-            order_date = timezone.now() - timedelta(days=days_ago, hours=random.randint(0, 23), minutes=random.randint(0, 59))
+            random_days = random.randint(0, total_days - 1)
+            random_seconds = random.randint(0, 86399)
+            naive_order_date = start_date + timedelta(days=random_days, seconds=random_seconds)
+            # Make the datetime timezone-aware
+            order_date = timezone.make_aware(naive_order_date, timezone.get_default_timezone())
             order = Order.objects.create(
                 user=customer_user,
-                status=random.choice(['pending', 'processing', 'delivered']),
-                created_at=order_date
+                status=random.choice(['pending', 'processing', 'delivered'])
+                # created_at will be set after save
             )
+            order.created_at = order_date
+            order.save(update_fields=['created_at'])
+            orders.append(order)
+
+        # Now create items for each order
+        for order in orders:
             meats_in_order = random.sample(all_meats, k=random.randint(1, 5))
             for meat in meats_in_order:
-                qty = random.randint(1, min(10, meat.quantity))
-                if qty > 0:
+                if meat.quantity > 0:
+                    qty = random.randint(1, min(10, meat.quantity))
                     Item.objects.create(
                         order=order,
                         meat=meat,
@@ -86,4 +130,5 @@ class Command(BaseCommand):
                         price=meat.price
                     )
                     items_created += 1
+
         self.stdout.write(self.style.SUCCESS(f'Successfully seeded {order_count} orders and {items_created} order items for history.'))

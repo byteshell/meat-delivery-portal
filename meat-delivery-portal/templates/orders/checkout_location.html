@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+{% block content %}
+<h2 class="text-xl font-bold mb-4">Choose Delivery Location</h2>
+<form method="post">
+    {% csrf_token %}
+    <div id="map" style="height: 400px;" class="mb-4"></div>
+    <input type="hidden" name="delivery_latitude" id="delivery_latitude">
+    <input type="hidden" name="delivery_longitude" id="delivery_longitude">
+    <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded">Confirm Location & Checkout</button>
+</form>
+<script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+<link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css"/>
+<script>
+    var map = L.map('map').setView([51.505, -0.09], 13);
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        maxZoom: 19,
+    }).addTo(map);
+    var marker;
+    function onMapClick(e) {
+        if (marker) {
+            marker.setLatLng(e.latlng);
+        } else {
+            marker = L.marker(e.latlng).addTo(map);
+        }
+        document.getElementById('delivery_latitude').value = e.latlng.lat;
+        document.getElementById('delivery_longitude').value = e.latlng.lng;
+    }
+    map.on('click', onMapClick);
+</script>
+{% endblock %}
