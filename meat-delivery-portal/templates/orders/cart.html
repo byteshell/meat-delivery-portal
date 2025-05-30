@@ -1,34 +1,62 @@
 {% extends 'base.html' %}
 {% block content %}
-<h2 class="text-xl font-bold mb-4">Cart</h2>
-{% if cart_items %}
-<form method="post" action="{% url 'update_cart' %}">
-    {% csrf_token %}
-    <table class="min-w-full bg-white rounded shadow">
-        <thead>
-            <tr>
-                <th class="px-4 py-2">Meat</th>
-                <th class="px-4 py-2">Quantity</th>
-                <th class="px-4 py-2">Subtotal</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for item in cart_items %}
-            <tr>
-                <td class="border px-4 py-2">{{ item.meat.get_meat_type_display }}</td>
-                <td class="border px-4 py-2">
-                    <input type="number" name="quantity_{{ item.meat.id }}" min="1" max="{{ item.meat.quantity|add:item.quantity }}" value="{{ item.quantity }}" class="border rounded px-2 py-1 w-20" required>
-                </td>
-                <td class="border px-4 py-2">${{ item.subtotal }}</td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
-    <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded mt-4 inline-block">Update Cart</button>
-</form>
-<p class="mt-4 font-bold">Total: ${{ total }}</p>
-<a href="{% url 'checkout' %}" class="bg-blue-500 text-white px-4 py-2 rounded mt-4 inline-block">Checkout</a>
-{% else %}
-<p>Your cart is empty.</p>
-{% endif %}
+<div class="animate-fade-in transition-all duration-500">
+    <div class="flex items-center mb-4">
+        <svg class="h-8 w-8 text-red-500 drop-shadow animate-bounce mr-2" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13l-1.35 2.7A1 1 0 007.5 17h9a1 1 0 00.95-.68L21 13M7 13V6h13"></path>
+        </svg>
+        <h2 class="text-3xl font-extrabold bg-gradient-to-r from-red-500 via-pink-500 to-yellow-400 bg-clip-text text-transparent drop-shadow">Your Cart</h2>
+    </div>
+    {% if cart_items %}
+    <form method="post" action="{% url 'update_cart' %}">
+        {% csrf_token %}
+        <div class="overflow-x-auto rounded-2xl shadow-2xl border border-red-100/60 bg-white/80 backdrop-blur-md transition-all duration-300 hover:shadow-pink-200 animate-fade-in">
+            <table class="min-w-full">
+                <thead>
+                    <tr>
+                        <th class="px-4 py-2 text-lg text-red-700">Meat</th>
+                        <th class="px-4 py-2 text-lg text-red-700">Quantity</th>
+                        <th class="px-4 py-2 text-lg text-red-700">Subtotal</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for item in cart_items %}
+                    <tr class="hover:bg-red-50 transition duration-200 animate-fade-in-up">
+                        <td class="border px-4 py-2 font-semibold text-gray-800">{{ item.meat.get_meat_type_display }}</td>
+                        <td class="border px-4 py-2">
+                            <input type="number" name="quantity_{{ item.meat.id }}" min="1" max="{{ item.meat.quantity|add:item.quantity }}" value="{{ item.quantity }}" class="border-2 border-red-200 rounded px-2 py-1 w-20 focus:ring-2 focus:ring-red-400 transition" required>
+                        </td>
+                        <td class="border px-4 py-2 text-pink-600 font-bold">${{ item.subtotal }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        <button type="submit" class="fancy-btn-blue mt-6">Update Cart</button>
+    </form>
+    <p class="mt-6 font-extrabold text-xl text-red-700 drop-shadow">Total: ${{ total }}</p>
+    <a href="{% url 'checkout' %}" class="fancy-btn-green mt-4 inline-block">Checkout</a>
+    {% else %}
+    <div class="flex flex-col items-center mt-10 animate-fade-in-up">
+        <svg class="h-16 w-16 text-red-300 mb-2 animate-pulse" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <circle cx="12" cy="12" r="10" stroke-dasharray="4 2"/>
+            <path stroke-linecap="round" stroke-linejoin="round" d="M8 12h8M12 8v8"/>
+        </svg>
+        <p class="text-lg text-gray-500 font-semibold">Your cart is empty.</p>
+    </div>
+    {% endif %}
+</div>
+<style>
+/* filepath: c:\Users\satym\OneDrive\Desktop\Projects\Python\meatdeliveryportal\meat-delivery-portal\templates\orders\cart.html */
+@keyframes fade-in {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+@keyframes fade-in-up {
+    from { opacity: 0; transform: translateY(30px);}
+    to { opacity: 1; transform: translateY(0);}
+}
+.animate-fade-in { animation: fade-in 1s ease; }
+.animate-fade-in-up { animation: fade-in-up 0.7s cubic-bezier(.39,.575,.565,1) both; }
+</style>
 {% endblock %}

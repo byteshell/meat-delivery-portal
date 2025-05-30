@@ -1,9 +1,24 @@
 {% extends 'base.html' %}
 {% block content %}
-<h2 class="text-xl font-bold mb-4">Add Meat</h2>
-<form method="post" class="bg-white p-4 rounded shadow max-w-md mx-auto">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded">Add</button>
-</form>
+<div class="animate-fade-in transition-all duration-500">
+    <div class="flex items-center mb-4">
+        <svg class="h-8 w-8 text-blue-500 drop-shadow animate-bounce mr-2" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/>
+        </svg>
+        <h2 class="text-3xl font-extrabold bg-gradient-to-r from-blue-500 via-green-500 to-pink-400 bg-clip-text text-transparent drop-shadow">Add Meat</h2>
+    </div>
+    <form method="post" class="bg-white/90 p-6 rounded-2xl shadow-xl border border-blue-100/60 max-w-md mx-auto backdrop-blur-md animate-fade-in">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit" class="fancy-btn-blue mt-4">Add</button>
+    </form>
+</div>
+<style>
+/* filepath: c:\Users\satym\OneDrive\Desktop\Projects\Python\meatdeliveryportal\meat-delivery-portal\templates\meat\add_meat.html */
+@keyframes fade-in {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+.animate-fade-in { animation: fade-in 1s ease; }
+</style>
 {% endblock %}

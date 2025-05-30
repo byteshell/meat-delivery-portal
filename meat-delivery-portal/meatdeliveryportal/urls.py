@@ -16,13 +16,14 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
+from django.shortcuts import redirect
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('accounts/', include('accounts.urls')),
-    path('meat/', include('meat.urls')),
+    path('meat/', include(('meat.urls', 'meat'), namespace='meat')),  # Namespace for clarity
     path('orders/', include('orders.urls')),
     path('logistics/', include('logistics.urls')),
     path('ai/', include('ai.urls')),
-    path('', include('meat.urls')),  # Home page: meat listing
+    path('', include(('meat.urls', 'meat'), namespace='meat')),  # Home page at /
 ]

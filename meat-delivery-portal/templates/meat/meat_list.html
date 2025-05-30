@@ -1,45 +1,95 @@
 {% extends 'base.html' %}
 {% block content %}
-<h1 class="text-2xl font-bold mb-4">Available Meat</h1>
-
-<form method="get" class="mb-6 flex flex-wrap gap-4 items-end bg-white p-4 rounded shadow">
-    <div>
-        <label for="meat_type" class="block text-sm font-medium text-gray-700">Meat Type</label>
-        <select name="meat_type" id="meat_type" class="border rounded px-2 py-1">
-            <option value="">All</option>
-            {% for value, label in meat_types %}
-                <option value="{{ value }}" {% if value == selected_meat_type %}selected{% endif %}>{{ label }}</option>
+<div class="relative">
+    <svg class="pointer-events-none absolute -top-10 right-0 w-32 h-32 opacity-40 animate-float" viewBox="0 0 64 64" fill="none">
+        <ellipse cx="32" cy="32" rx="28" ry="16" fill="#f87171" fill-opacity="0.6"/>
+        <ellipse cx="32" cy="32" rx="16" ry="8" fill="#fbbf24" fill-opacity="0.4"/>
+    </svg>
+    <h1 class="text-4xl font-extrabold mb-4 bg-gradient-to-r from-red-500 via-pink-500 to-yellow-400 bg-clip-text text-transparent drop-shadow animate-fade-in">Available Meat</h1>
+    <form method="get" class="mb-6 flex flex-wrap gap-4 items-end bg-white/80 p-4 rounded-2xl shadow-xl border border-red-100/60 backdrop-blur-md animate-fade-in">
+        <div>
+            <label for="meat_type" class="block text-sm font-medium text-gray-700">Meat Type</label>
+            <select name="meat_type" id="meat_type" class="border-2 border-red-200 rounded px-2 py-1 focus:ring-2 focus:ring-red-400 transition">
+                <option value="">All</option>
+                {% for value, label in meat_types %}
+                    <option value="{{ value }}" {% if value == selected_meat_type %}selected{% endif %}>{{ label }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div>
+            <label for="company" class="block text-sm font-medium text-gray-700">Company</label>
+            <select name="company" id="company" class="border-2 border-red-200 rounded px-2 py-1 focus:ring-2 focus:ring-red-400 transition">
+                <option value="">All</option>
+                {% for id, name in companies %}
+                    <option value="{{ id }}" {% if id|stringformat:"s" == selected_company %}selected{% endif %}>{{ name }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div>
+            <button type="submit" class="fancy-btn-blue">Filter</button>
+            <a href="{% url 'meat:meat_list' %}" class="ml-2 text-blue-600 underline hover:text-blue-800 transition">Reset</a>
+        </div>
+    </form>
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-8 animate-fade-in-up transition-all duration-700">
+        {% for meat in meats %}
+        <div class="relative bg-white/90 p-6 rounded-2xl shadow-xl border-2 border-red-100/60 hover:border-pink-400 hover:shadow-pink-200 transition-all duration-300 group animate-fade-in-up overflow-hidden">
+            <div class="absolute -top-6 -right-6 opacity-20 pointer-events-none">
+                <svg class="w-20 h-20 animate-spin-slow" viewBox="0 0 64 64" fill="none">
+                    <ellipse cx="32" cy="32" rx="28" ry="16" fill="#f87171" fill-opacity="0.5"/>
+                </svg>
+            </div>
+            <h2 class="font-extrabold text-2xl text-red-600 drop-shadow mb-2 group-hover:text-pink-500 transition">{{ meat.get_meat_type_display }}</h2>
+            <p class="text-gray-700 font-medium">Company: <span class="text-pink-600">{{ meat.company.company_name }}</span></p>
+            <p class="text-gray-700">Quantity: <span class="font-bold text-yellow-600">{{ meat.quantity }} kg</span></p>
+            <p class="text-gray-700">Price: <span class="font-bold text-green-600">${{ meat.price }}</span></p>
+            <form method="post" action="{% url 'add_to_cart' meat.id %}" class="mt-4 flex items-center gap-2">
+                {% csrf_token %}
+                <input type="number" name="quantity" min="1" max="{{ meat.quantity }}" value="1" class="border-2 border-pink-200 rounded px-2 py-1 w-20 focus:ring-2 focus:ring-pink-400 transition" required>
+                <button type="submit" class="fancy-btn-green animate-fade-in-up">Add to Cart</button>
+            </form>
+        </div>
+        {% endfor %}
+    </div>
+    {% if page_obj.has_other_pages %}
+    <div class="flex justify-center mt-10 animate-fade-in-up">
+        <nav class="inline-flex rounded-lg shadow bg-white/80 backdrop-blur border border-red-100/60 px-4 py-2 space-x-2">
+            {% if page_obj.has_previous %}
+                <a href="?{% if selected_meat_type %}meat_type={{ selected_meat_type }}&{% endif %}{% if selected_company %}company={{ selected_company }}&{% endif %}page={{ page_obj.previous_page_number }}" class="fancy-btn-blue px-4 py-2">Previous</a>
+            {% else %}
+                <span class="fancy-btn-blue px-4 py-2 opacity-50 cursor-not-allowed">Previous</span>
+            {% endif %}
+            {% for num in page_obj.paginator.page_range %}
+                {% if page_obj.number == num %}
+                    <span class="fancy-btn-red px-4 py-2 font-bold scale-110">{{ num }}</span>
+                {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
+                    <a href="?{% if selected_meat_type %}meat_type={{ selected_meat_type }}&{% endif %}{% if selected_company %}company={{ selected_company }}&{% endif %}page={{ num }}" class="fancy-btn-blue px-4 py-2">{{ num }}</a>
+                {% endif %}
             {% endfor %}
-        </select>
+            {% if page_obj.has_next %}
+                <a href="?{% if selected_meat_type %}meat_type={{ selected_meat_type }}&{% endif %}{% if selected_company %}company={{ selected_company }}&{% endif %}page={{ page_obj.next_page_number }}" class="fancy-btn-blue px-4 py-2">Next</a>
+            {% else %}
+                <span class="fancy-btn-blue px-4 py-2 opacity-50 cursor-not-allowed">Next</span>
+            {% endif %}
+        </nav>
     </div>
-    <div>
-        <label for="company" class="block text-sm font-medium text-gray-700">Company</label>
-        <select name="company" id="company" class="border rounded px-2 py-1">
-            <option value="">All</option>
-            {% for id, name in companies %}
-                <option value="{{ id }}" {% if id|stringformat:"s" == selected_company %}selected{% endif %}>{{ name }}</option>
-            {% endfor %}
-        </select>
-    </div>
-    <div>
-        <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded">Filter</button>
-        <a href="{% url 'meat_list' %}" class="ml-2 text-blue-600 underline">Reset</a>
-    </div>
-</form>
-
-<div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-    {% for meat in meats %}
-    <div class="bg-white p-4 rounded shadow">
-        <h2 class="font-bold">{{ meat.get_meat_type_display }}</h2>
-        <p>Company: {{ meat.company.company_name }}</p>
-        <p>Quantity: {{ meat.quantity }} kg</p>
-        <p>Price: ${{ meat.price }}</p>
-        <form method="post" action="{% url 'add_to_cart' meat.id %}">
-            {% csrf_token %}
-            <input type="number" name="quantity" min="1" max="{{ meat.quantity }}" value="1" class="border rounded px-2 py-1 w-20" required>
-            <button type="submit" class="bg-green-500 text-white px-2 py-1 rounded mt-2">Add to Cart</button>
-        </form>
-    </div>
-    {% endfor %}
+    {% endif %}
 </div>
+<style>
+/* filepath: c:\Users\satym\OneDrive\Desktop\Projects\Python\meatdeliveryportal\meat-delivery-portal\templates\meat\meat_list.html */
+@keyframes fade-in {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+@keyframes fade-in-up {
+    from { opacity: 0; transform: translateY(30px);}
+    to { opacity: 1; transform: translateY(0);}
+}
+@keyframes float {
+    0%, 100% { transform: translateY(0);}
+    50% { transform: translateY(-16px);}
+}
+.animate-fade-in { animation: fade-in 1s ease; }
+.animate-fade-in-up { animation: fade-in-up 0.7s cubic-bezier(.39,.575,.565,1) both; }
+.animate-float { animation: float 3s ease-in-out infinite; }
+</style>
 {% endblock %}

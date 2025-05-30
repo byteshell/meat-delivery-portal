@@ -1,26 +1,50 @@
 {% extends 'base.html' %}
 {% block content %}
-<h2 class="text-xl font-bold mb-4">Company Dashboard</h2>
-<a href="{% url 'add_meat' %}" class="bg-green-500 text-white px-4 py-2 rounded mb-4 inline-block">Add Meat</a>
-<a href="{% url 'company_meat_orders' %}" class="bg-blue-500 text-white px-4 py-2 rounded mb-4 inline-block ml-2">Track Meat Orders</a>
-<table class="min-w-full bg-white rounded shadow">
-    <thead>
-        <tr>
-            <th class="px-4 py-2">Type</th>
-            <th class="px-4 py-2">Quantity</th>
-            <th class="px-4 py-2">Price</th>
-            <th class="px-4 py-2">Date Added</th>
-        </tr>
-    </thead>
-    <tbody>
-        {% for meat in meats %}
-        <tr>
-            <td class="border px-4 py-2">{{ meat.get_meat_type_display }}</td>
-            <td class="border px-4 py-2">{{ meat.quantity }}</td>
-            <td class="border px-4 py-2">${{ meat.price }}</td>
-            <td class="border px-4 py-2">{{ meat.date_added }}</td>
-        </tr>
-        {% endfor %}
-    </tbody>
-</table>
+<div class="animate-fade-in transition-all duration-500">
+    <div class="flex items-center mb-4">
+        <svg class="h-8 w-8 text-green-500 drop-shadow animate-bounce mr-2" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/>
+        </svg>
+        <h2 class="text-3xl font-extrabold bg-gradient-to-r from-green-500 via-blue-500 to-pink-400 bg-clip-text text-transparent drop-shadow">Company Dashboard</h2>
+    </div>
+    <div class="mb-4 flex gap-2">
+        <a href="{% url 'add_meat' %}" class="fancy-btn-green">Add Meat</a>
+        <a href="{% url 'company_meat_orders' %}" class="fancy-btn-blue">Track Meat Orders</a>
+    </div>
+    <div class="overflow-x-auto rounded-2xl shadow-2xl border border-green-100/60 bg-white/80 backdrop-blur-md transition-all duration-300 hover:shadow-green-200">
+        <table class="min-w-full">
+            <thead>
+                <tr>
+                    <th class="px-4 py-2 text-lg text-green-700">Type</th>
+                    <th class="px-4 py-2 text-lg text-green-700">Quantity</th>
+                    <th class="px-4 py-2 text-lg text-green-700">Price</th>
+                    <th class="px-4 py-2 text-lg text-green-700">Date Added</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for meat in meats %}
+                <tr class="hover:bg-green-50 transition duration-200 animate-fade-in-up">
+                    <td class="border px-4 py-2 font-semibold text-gray-800">{{ meat.get_meat_type_display }}</td>
+                    <td class="border px-4 py-2">{{ meat.quantity }}</td>
+                    <td class="border px-4 py-2 text-green-600 font-bold">${{ meat.price }}</td>
+                    <td class="border px-4 py-2">{{ meat.date_added }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+<style>
+/* filepath: c:\Users\satym\OneDrive\Desktop\Projects\Python\meatdeliveryportal\meat-delivery-portal\templates\meat\company_dashboard.html */
+@keyframes fade-in {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+@keyframes fade-in-up {
+    from { opacity: 0; transform: translateY(30px);}
+    to { opacity: 1; transform: translateY(0);}
+}
+.animate-fade-in { animation: fade-in 1s ease; }
+.animate-fade-in-up { animation: fade-in-up 0.7s cubic-bezier(.39,.575,.565,1) both; }
+</style>
 {% endblock %}

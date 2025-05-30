@@ -3,6 +3,11 @@ from .models import Meat
 from .forms import MeatForm
 from django.contrib.auth.decorators import login_required
 from orders.models import Item
+from django.core.paginator import Paginator
+
+def home(request):
+    # Landing page view
+    return render(request, 'meat/home.html')
 
 def meat_list(request):
     meats = Meat.objects.filter(quantity__gt=0)
@@ -17,12 +22,18 @@ def meat_list(request):
     if selected_company:
         meats = meats.filter(company__id=selected_company)
 
+    # Pagination
+    paginator = Paginator(meats, 9)  # 9 meats per page
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+
     return render(request, 'meat/meat_list.html', {
-        'meats': meats,
+        'meats': page_obj.object_list,
         'meat_types': meat_types,
         'companies': companies,
         'selected_meat_type': selected_meat_type,
         'selected_company': selected_company,
+        'page_obj': page_obj,
     })
 
 @login_required

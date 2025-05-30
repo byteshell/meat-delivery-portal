@@ -1,31 +1,54 @@
 {% extends 'base.html' %}
 {% block content %}
-<h2 class="text-xl font-bold mb-4">Meat Stock & Orders Breakdown</h2>
-{% for entry in meat_orders %}
-    <div class="mb-6 bg-white p-4 rounded shadow">
-        <h3 class="font-bold text-lg">{{ entry.meat.get_meat_type_display }} ({{ entry.meat.company.company_name }})</h3>
-        <p>Current Stock: <span class="font-semibold">{{ entry.current_quantity }} kg</span></p>
-        <h4 class="mt-2 font-semibold">Ordered by Users:</h4>
-        {% if entry.user_orders %}
-        <table class="min-w-full bg-gray-50 rounded shadow mt-2">
-            <thead>
-                <tr>
-                    <th class="px-4 py-2">User</th>
-                    <th class="px-4 py-2">Total Ordered (kg)</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for username, qty in entry.user_orders.items %}
-                <tr>
-                    <td class="border px-4 py-2">{{ username }}</td>
-                    <td class="border px-4 py-2">{{ qty }}</td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-        {% else %}
-            <p class="text-gray-500">No orders for this meat yet.</p>
-        {% endif %}
+<div class="animate-fade-in transition-all duration-500">
+    <div class="flex items-center mb-4">
+        <svg class="h-8 w-8 text-pink-500 drop-shadow animate-bounce mr-2" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <circle cx="12" cy="12" r="10" stroke-dasharray="4 2"/>
+            <path stroke-linecap="round" stroke-linejoin="round" d="M8 12h8M12 8v8"/>
+        </svg>
+        <h2 class="text-3xl font-extrabold bg-gradient-to-r from-pink-500 via-yellow-400 to-red-500 bg-clip-text text-transparent drop-shadow">Meat Stock & Orders Breakdown</h2>
     </div>
-{% endfor %}
+    {% for entry in meat_orders %}
+        <div class="mb-6 bg-white/90 p-6 rounded-2xl shadow-xl border border-pink-100/60 animate-fade-in-up">
+            <h3 class="font-bold text-xl text-pink-600 mb-2">{{ entry.meat.get_meat_type_display }} <span class="text-gray-500">({{ entry.meat.company.company_name }})</span></h3>
+            <p>Current Stock: <span class="font-semibold text-yellow-600">{{ entry.current_quantity }} kg</span></p>
+            <h4 class="mt-2 font-semibold text-pink-700">Ordered by Users:</h4>
+            {% if entry.user_orders %}
+            <div class="overflow-x-auto rounded-xl shadow border border-pink-100/60 bg-white/80 backdrop-blur-md mt-2">
+                <table class="min-w-full">
+                    <thead>
+                        <tr>
+                            <th class="px-4 py-2 text-pink-700">User</th>
+                            <th class="px-4 py-2 text-pink-700">Total Ordered (kg)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for username, qty in entry.user_orders.items %}
+                        <tr class="hover:bg-pink-50 transition duration-200">
+                            <td class="border px-4 py-2">{{ username }}</td>
+                            <td class="border px-4 py-2">{{ qty }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% else %}
+                <p class="text-gray-500">No orders for this meat yet.</p>
+            {% endif %}
+        </div>
+    {% endfor %}
+</div>
+<style>
+/* filepath: c:\Users\satym\OneDrive\Desktop\Projects\Python\meatdeliveryportal\meat-delivery-portal\templates\meat\company_meat_orders.html */
+@keyframes fade-in {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+@keyframes fade-in-up {
+    from { opacity: 0; transform: translateY(30px);}
+    to { opacity: 1; transform: translateY(0);}
+}
+.animate-fade-in { animation: fade-in 1s ease; }
+.animate-fade-in-up { animation: fade-in-up 0.7s cubic-bezier(.39,.575,.565,1) both; }
+</style>
 {% endblock %}

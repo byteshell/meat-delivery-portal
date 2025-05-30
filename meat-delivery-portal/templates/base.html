@@ -1,3 +1,4 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -7,48 +8,81 @@
     <!-- TailwindCSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <style>
+        /* Custom scrollbar for fancy look */
+        ::-webkit-scrollbar { width: 8px; background: #f3f4f6; }
+        ::-webkit-scrollbar-thumb { background: #ef4444; border-radius: 8px; }
+        /* Remove default outline for buttons, handled by Tailwind focus */
+        button:focus { outline: none; }
+    </style>
+    <!-- Custom Animations & Styles -->
+    <link rel="stylesheet" href="{% static 'css/fancy.css' %}">
 </head>
-<body class="bg-gray-100 min-h-screen flex flex-col">
+<body class="relative bg-gradient-to-br from-red-50 via-white to-red-100 min-h-screen flex flex-col font-sans overflow-x-hidden">
+    <!-- Fancy global loading overlay -->
+    <div id="global-loader" class="fixed inset-0 z-50 flex items-center justify-center bg-white/80 backdrop-blur-lg transition-opacity duration-500 opacity-0 pointer-events-none">
+        <div class="flex flex-col items-center">
+            <svg class="animate-spin-fast h-16 w-16 text-red-500 drop-shadow mb-4" fill="none" viewBox="0 0 64 64">
+                <circle cx="32" cy="32" r="28" stroke="#ef4444" stroke-width="8" stroke-dasharray="40 20" fill="none"/>
+            </svg>
+            <svg class="h-12 w-12 text-yellow-400 animate-bounce mb-2" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                <ellipse cx="12" cy="12" rx="10" ry="6" fill="#fbbf24" fill-opacity="0.7"/>
+                <ellipse cx="12" cy="12" rx="6" ry="3" fill="#f87171" fill-opacity="0.7"/>
+            </svg>
+            <span class="text-xl font-extrabold bg-gradient-to-r from-red-500 via-pink-500 to-yellow-400 bg-clip-text text-transparent animate-pulse">Loading magic meat...</span>
+        </div>
+    </div>
+    <!-- Fancy background image overlay -->
+    <div class="pointer-events-none fixed inset-0 z-0">
+        <img src="https://images.unsplash.com/photo-1504674900247-0877df9cc836?auto=format&fit=crop&w=1500&q=80"
+             alt="Fancy meat background"
+             class="w-full h-full object-cover opacity-30 blur-sm select-none" />
+        <div class="absolute inset-0 bg-gradient-to-br from-red-100/80 via-white/60 to-red-200/80"></div>
+    </div>
+    <!-- Decorative floating SVG -->
+    <svg class="pointer-events-none fixed top-0 right-0 z-10 w-64 h-64 opacity-30 animate-spin-slow" viewBox="0 0 200 200" fill="none">
+        <circle cx="100" cy="100" r="80" stroke="#ef4444" stroke-width="8" stroke-dasharray="20 10" fill="none"/>
+    </svg>
     <!-- Navbar -->
-    <header>
-        <nav class="bg-white border-b border-gray-200 shadow" role="navigation" aria-label="Main navigation">
+    <header class="relative z-20">
+        <nav class="bg-white/90 backdrop-blur border-b border-red-200 shadow-lg" role="navigation" aria-label="Main navigation">
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                <div class="flex justify-between h-16">
-                    <div class="flex">
-                        <a href="/" class="flex-shrink-0 flex items-center text-2xl font-bold text-red-700 hover:text-red-900 focus:outline-none focus:ring-2 focus:ring-red-500" aria-label="Home">
-                            <svg class="h-8 w-8 mr-2 text-red-700" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true">
+                <div class="flex justify-between h-20 items-center">
+                    <div class="flex items-center">
+                        <a href="/" class="flex-shrink-0 flex items-center text-3xl font-extrabold text-red-600 hover:text-red-800 focus:outline-none focus:ring-2 focus:ring-red-400 rounded-lg px-2 py-1 transition" aria-label="Home">
+                            <svg class="h-10 w-10 mr-3 text-red-500 drop-shadow" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true">
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M3 12l2-2m0 0l7-7 7 7m-9 2v8m4-8v8m-4 0h4"></path>
                             </svg>
-                            Meat Portal
+                            <span class="bg-gradient-to-r from-red-500 to-red-700 bg-clip-text text-transparent">Meat Portal</span>
                         </a>
-                        <div class="hidden sm:-my-px sm:ml-10 sm:flex sm:space-x-8">
-                            <a href="/meat/" class="inline-flex items-center px-1 pt-1 border-b-2 border-transparent text-sm font-medium text-gray-700 hover:border-red-700 hover:text-red-700 focus:outline-none focus:text-red-900 focus:border-red-900 transition">Meat</a>
-                            <a href="/orders/cart/" class="inline-flex items-center px-1 pt-1 border-b-2 border-transparent text-sm font-medium text-gray-700 hover:border-red-700 hover:text-red-700 focus:outline-none focus:text-red-900 focus:border-red-900 transition">Cart</a>
-                            <a href="/orders/history/" class="inline-flex items-center px-1 pt-1 border-b-2 border-transparent text-sm font-medium text-gray-700 hover:border-red-700 hover:text-red-700 focus:outline-none focus:text-red-900 focus:border-red-900 transition">Orders</a>
-                            <a href="/ai/forecast/" class="inline-flex items-center px-1 pt-1 border-b-2 border-transparent text-sm font-medium text-gray-700 hover:border-red-700 hover:text-red-700 focus:outline-none focus:text-red-900 focus:border-red-900 transition">Forecast</a>
-                            <a href="/meat/company/" class="inline-flex items-center px-1 pt-1 border-b-2 border-transparent text-sm font-medium text-gray-700 hover:border-red-700 hover:text-red-700 focus:outline-none focus:text-red-900 focus:border-red-900 transition">Company Dashboard</a>
-                            <a href="/logistics/track/" class="inline-flex items-center px-1 pt-1 border-b-2 border-transparent text-sm font-medium text-gray-700 hover:border-blue-700 hover:text-blue-700 focus:outline-none focus:text-blue-900 focus:border-blue-900 transition">Track Delivery</a>
+                        <div class="hidden sm:ml-12 sm:flex sm:space-x-8">
+                            <a href="/meat/" class="fancy-nav-link">Meat</a>
+                            <a href="/orders/cart/" class="fancy-nav-link">Cart</a>
+                            <a href="/orders/history/" class="fancy-nav-link">Orders</a>
+                            <a href="/ai/forecast/" class="fancy-nav-link">Forecast</a>
+                            <a href="/meat/company/" class="fancy-nav-link">Company Dashboard</a>
+                            <a href="/logistics/track/" class="fancy-nav-link text-blue-600 hover:text-blue-800 border-blue-600 hover:border-blue-800">Track Delivery</a>
                         </div>
                     </div>
-                    <div class="hidden sm:ml-6 sm:flex sm:items-center">
+                    <div class="hidden sm:flex sm:items-center space-x-4">
                         {% if user.is_authenticated %}
-                            <span class="text-gray-700 mr-4">Hello, {{ user.username|escape }}</span>
+                            <span class="text-gray-700 font-medium mr-2">Hello, <span class="text-red-600 font-bold">{{ user.username|escape }}</span></span>
                             <form method="post" action="/accounts/logout/" class="inline">
                                 {% csrf_token %}
-                                <button type="submit" class="bg-red-600 hover:bg-red-700 text-white px-3 py-1 rounded focus:outline-none focus:ring-2 focus:ring-red-500 transition">Logout</button>
+                                <button type="submit" class="fancy-btn-red">Logout</button>
                             </form>
                         {% else %}
-                            <a href="/accounts/login/" class="bg-blue-600 hover:bg-blue-700 text-white px-3 py-1 rounded mr-2 focus:outline-none focus:ring-2 focus:ring-blue-500 transition">Login</a>
-                            <a href="/accounts/register/" class="bg-green-600 hover:bg-green-700 text-white px-3 py-1 rounded focus:outline-none focus:ring-2 focus:ring-green-500 transition">Register</a>
+                            <a href="/accounts/login/" class="fancy-btn-blue mr-2">Login</a>
+                            <a href="/accounts/register/" class="fancy-btn-green">Register</a>
                         {% endif %}
                     </div>
                     <!-- Mobile menu button -->
                     <div class="-mr-2 flex items-center sm:hidden">
-                        <button id="mobile-menu-button" type="button" class="inline-flex items-center justify-center p-2 rounded-md text-gray-400 hover:text-red-700 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-red-500" aria-controls="mobile-menu" aria-expanded="false" aria-label="Open main menu">
-                            <svg class="block h-6 w-6" id="menu-open-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+                        <button id="mobile-menu-button" type="button" class="inline-flex items-center justify-center p-2 rounded-md text-red-500 hover:text-red-700 hover:bg-red-100 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-red-400 transition" aria-controls="mobile-menu" aria-expanded="false" aria-label="Open main menu">
+                            <svg class="block h-7 w-7" id="menu-open-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
                             </svg>
-                            <svg class="hidden h-6 w-6" id="menu-close-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+                            <svg class="hidden h-7 w-7" id="menu-close-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
                             </svg>
                         </button>
@@ -57,33 +91,35 @@
             </div>
             <!-- Mobile menu, show/hide based on menu state. -->
             <div class="sm:hidden" id="mobile-menu" style="display: none;">
-                <div class="pt-2 pb-3 space-y-1">
-                    <a href="/meat/" class="block pl-3 pr-4 py-2 border-l-4 border-transparent text-base font-medium text-gray-700 hover:border-red-700 hover:bg-gray-50 hover:text-red-700 focus:outline-none focus:bg-gray-100 transition">Meat</a>
-                    <a href="/orders/cart/" class="block pl-3 pr-4 py-2 border-l-4 border-transparent text-base font-medium text-gray-700 hover:border-red-700 hover:bg-gray-50 hover:text-red-700 focus:outline-none focus:bg-gray-100 transition">Cart</a>
-                    <a href="/orders/history/" class="block pl-3 pr-4 py-2 border-l-4 border-transparent text-base font-medium text-gray-700 hover:border-red-700 hover:bg-gray-50 hover:text-red-700 focus:outline-none focus:bg-gray-100 transition">Orders</a>
-                    <a href="/ai/forecast/" class="block pl-3 pr-4 py-2 border-l-4 border-transparent text-base font-medium text-gray-700 hover:border-red-700 hover:bg-gray-50 hover:text-red-700 focus:outline-none focus:bg-gray-100 transition">Forecast</a>
-                    <a href="/meat/company/" class="block pl-3 pr-4 py-2 border-l-4 border-transparent text-base font-medium text-gray-700 hover:border-red-700 hover:bg-gray-50 hover:text-red-700 focus:outline-none focus:bg-gray-100 transition">Company Dashboard</a>
-                    <a href="/logistics/track/" class="block pl-3 pr-4 py-2 border-l-4 border-transparent text-base font-medium text-blue-700 hover:bg-blue-50 hover:text-blue-900 focus:outline-none focus:bg-blue-100 transition">Track Delivery</a>
+                <div class="pt-2 pb-3 space-y-1 bg-white/95 shadow-lg rounded-b-xl">
+                    <a href="/meat/" class="fancy-mobile-link">Meat</a>
+                    <a href="/orders/cart/" class="fancy-mobile-link">Cart</a>
+                    <a href="/orders/history/" class="fancy-mobile-link">Orders</a>
+                    <a href="/ai/forecast/" class="fancy-mobile-link">Forecast</a>
+                    <a href="/meat/company/" class="fancy-mobile-link">Company Dashboard</a>
+                    <a href="/logistics/track/" class="fancy-mobile-link text-blue-600 hover:text-blue-800 border-blue-600 hover:border-blue-800">Track Delivery</a>
                     {% if user.is_authenticated %}
                         <form method="post" action="/accounts/logout/" class="pl-3 pr-4 py-2">
                             {% csrf_token %}
-                            <button type="submit" class="w-full text-left bg-red-600 hover:bg-red-700 text-white px-3 py-1 rounded focus:outline-none focus:ring-2 focus:ring-red-500 transition">Logout</button>
+                            <button type="submit" class="w-full text-left fancy-btn-red">Logout</button>
                         </form>
                     {% else %}
-                        <a href="/accounts/login/" class="block pl-3 pr-4 py-2 border-l-4 border-transparent text-base font-medium text-blue-700 hover:bg-blue-50 hover:text-blue-900 focus:outline-none focus:bg-blue-100 transition">Login</a>
-                        <a href="/accounts/register/" class="block pl-3 pr-4 py-2 border-l-4 border-transparent text-base font-medium text-green-700 hover:bg-green-50 hover:text-green-900 focus:outline-none focus:bg-green-100 transition">Register</a>
+                        <a href="/accounts/login/" class="block fancy-btn-blue my-1">Login</a>
+                        <a href="/accounts/register/" class="block fancy-btn-green my-1">Register</a>
                     {% endif %}
                 </div>
             </div>
         </nav>
     </header>
-    <main class="flex-1">
-        <div class="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
-            {% block content %}{% endblock %}
+    <main class="flex-1 relative z-10">
+        <div class="max-w-7xl mx-auto py-10 sm:px-6 lg:px-8">
+            <div class="bg-white/80 rounded-2xl shadow-xl p-8 backdrop-blur-md border border-red-100/60 transition-all duration-300 hover:shadow-2xl hover:border-red-200">
+                {% block content %}{% endblock %}
+            </div>
         </div>
     </main>
-    <footer class="bg-white border-t border-gray-200 shadow mt-8">
-        <div class="max-w-7xl mx-auto px-4 py-4 text-center text-gray-500 text-sm">
+    <footer class="bg-gradient-to-r from-red-600 to-red-800 border-t border-red-200 shadow-lg mt-8 relative z-20">
+        <div class="max-w-7xl mx-auto px-4 py-6 text-center text-white text-sm tracking-wide font-medium">
             &copy; {{ now|date:"Y" }} Meat Delivery Portal. All rights reserved.
         </div>
     </footer>
@@ -111,6 +147,88 @@
                 menuButton.setAttribute('aria-expanded', false);
             }
         });
+        // Fancy loader logic
+        function showLoader() {
+            const loader = document.getElementById('global-loader');
+            loader.classList.remove('opacity-0', 'pointer-events-none');
+            loader.classList.add('opacity-100');
+        }
+        function hideLoader() {
+            const loader = document.getElementById('global-loader');
+            loader.classList.add('opacity-0');
+            setTimeout(() => loader.classList.add('pointer-events-none'), 500);
+        }
+        // Show loader on navigation or form submit
+        window.addEventListener('pageshow', hideLoader);
+        document.addEventListener('DOMContentLoaded', function() {
+            // Show loader on link click
+            document.body.addEventListener('click', function(e) {
+                const t = e.target.closest('a');
+                if (t && t.target !== '_blank' && !t.href.startsWith('#') && !t.hasAttribute('download')) {
+                    showLoader();
+                }
+            });
+            // Show loader on form submit
+            document.body.addEventListener('submit', function(e) {
+                showLoader();
+            });
+        });
     </script>
+    <style>
+        /* Fancy nav link component */
+        .fancy-nav-link {
+            @apply inline-flex items-center px-3 pt-1 border-b-2 border-transparent text-lg font-semibold text-gray-700 hover:border-red-600 hover:text-red-700 focus:outline-none focus:text-red-900 focus:border-red-900 transition-all duration-200 rounded-t-lg;
+            @apply transition-transform duration-200 ease-in-out hover:scale-110 active:scale-95;
+        }
+        .fancy-btn-red {
+            @apply bg-gradient-to-r from-red-500 to-red-700 hover:from-red-600 hover:to-red-800 text-white px-4 py-2 rounded-lg shadow-md font-semibold focus:outline-none focus:ring-2 focus:ring-red-400 transition-all duration-200;
+            @apply hover:scale-105 active:scale-95 hover:shadow-lg;
+        }
+        .fancy-btn-blue {
+            @apply bg-gradient-to-r from-blue-500 to-blue-700 hover:from-blue-600 hover:to-blue-800 text-white px-4 py-2 rounded-lg shadow-md font-semibold focus:outline-none focus:ring-2 focus:ring-blue-400 transition-all duration-200;
+            @apply hover:scale-105 active:scale-95 hover:shadow-lg;
+        }
+        .fancy-btn-green {
+            @apply bg-gradient-to-r from-green-500 to-green-700 hover:from-green-600 hover:to-green-800 text-white px-4 py-2 rounded-lg shadow-md font-semibold focus:outline-none focus:ring-2 focus:ring-green-400 transition-all duration-200;
+            @apply hover:scale-105 active:scale-95 hover:shadow-lg;
+        }
+        .fancy-mobile-link {
+            @apply block pl-5 pr-4 py-3 border-l-4 border-transparent text-base font-semibold text-gray-700 hover:border-red-600 hover:bg-red-50 hover:text-red-700 focus:outline-none focus:bg-red-100 transition-all duration-200 rounded-r-lg;
+            @apply transition-transform duration-200 ease-in-out hover:scale-105 active:scale-95;
+        }
+        /* Slow spin animation for SVG */
+        @keyframes spin-slow {
+            0% { transform: rotate(0deg);}
+            100% { transform: rotate(360deg);}
+        }
+        .animate-spin-slow {
+            animation: spin-slow 18s linear infinite;
+        }
+        /* Animated loader */
+        @keyframes spin-fast {
+            0% { transform: rotate(0deg);}
+            100% { transform: rotate(360deg);}
+        }
+        .animate-spin-fast {
+            animation: spin-fast 0.8s linear infinite;
+        }
+        /* Fancy button base styles */
+        .fancy-btn-red, .fancy-btn-blue, .fancy-btn-green {
+            @apply transition-all duration-300 ease-in-out transform;
+            box-shadow: 0 2px 16px 0 rgba(239,68,68,0.10), 0 1.5px 6px 0 rgba(0,0,0,0.04);
+        }
+        .fancy-btn-red:hover, .fancy-btn-blue:hover, .fancy-btn-green:hover {
+            filter: brightness(1.08) saturate(1.2) drop-shadow(0 0 8px #fbbf24aa);
+            transform: scale(1.07) translateY(-2px) rotate(-1deg);
+        }
+        .fancy-btn-red:active, .fancy-btn-blue:active, .fancy-btn-green:active {
+            filter: brightness(0.95);
+            transform: scale(0.97) translateY(1px);
+        }
+        .fancy-btn-red:focus, .fancy-btn-blue:focus, .fancy-btn-green:focus {
+            outline: 2px solid #fbbf24;
+            outline-offset: 2px;
+        }
+    </style>
 </body>
 </html>
